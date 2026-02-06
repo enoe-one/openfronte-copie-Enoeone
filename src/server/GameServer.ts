@@ -3,6 +3,7 @@ import { Logger } from "winston";
 import WebSocket from "ws";
 import { z } from "zod";
 import { GameEnv, ServerConfig } from "../core/configuration/Config";
+import { applyDevBonuses } from "../core/game/PlayerBonus";
 import { GameType } from "../core/game/Game";
 import {
   ClientID,
@@ -210,18 +211,22 @@ export class GameServer {
       }
     }
 
-    // Client connection accepted
-    this.activeClients.push(client);
-    client.lastPing = Date.now();
-    this.markClientDisconnected(client.clientID, false);
-    this.allClients.set(client.clientID, client);
-    import { applyDevBonuses } from "../core/game/PlayerBonus";
-    this.addListeners(client);
+// Client connection accepted
+this.activeClients.push(client);
+client.lastPing = Date.now();
+this.markClientDisconnected(client.clientID, false);
+this.allClients.set(client.clientID, client);
 
-    // In case a client joined the game late and missed the start message.
-    if (this._hasStarted) {
-      this.sendStartGameMsg(client.ws, 0);
-    }
+// === APPLIQUER LES BONUS DEV ===
+applyDevBonuses(client);
+
+// Ajouter les listeners
+this.addListeners(client);
+
+// In case a client joined the game late and missed the start message.
+if (this._hasStarted) {
+    this.sendStartGameMsg(client.ws, 0);
+}
   }
 
   public rejoinClient(
