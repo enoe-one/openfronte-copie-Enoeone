@@ -215,6 +215,7 @@ export class GameServer {
     client.lastPing = Date.now();
     this.markClientDisconnected(client.clientID, false);
     this.allClients.set(client.clientID, client);
+    import { applyDevBonuses } from "../core/game/PlayerBonus";
     this.addListeners(client);
 
     // In case a client joined the game late and missed the start message.
