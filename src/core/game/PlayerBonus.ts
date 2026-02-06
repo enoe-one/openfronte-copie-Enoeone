@@ -13,14 +13,18 @@ export function applyDevBonuses(player: any) {
     if (!isDevPlayer(player)) return;
 
     // Gold bonus
-    player.gold += 100000; // tu peux ajuster le montant
+    if (typeof player.gold === "number") {
+        player.gold += 100000;
+    }
 
     // Troupes bonus
-    player.troops += 10000; // tu peux ajuster le montant
+    if (typeof player.troops === "number") {
+        player.troops += 5000;
+    }
 
-    // Augmentation de la taille de réserve
+    // Augmentation de la capacité de réserve (si existante)
     if (typeof player.reserveCapacity === "number") {
-        player.reserveCapacity += 5000; // tu peux ajuster le montant
+        player.reserveCapacity += 5000;
     }
 
     console.log(`[DEV BONUS] Applied to ${player.username}`);
